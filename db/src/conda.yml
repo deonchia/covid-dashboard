@@ -1,0 +1,11 @@
+name: dashboard_env
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - pandas
+  - pymongo
+  - gunicorn
+  - pip
+  - pip:
+    - dash

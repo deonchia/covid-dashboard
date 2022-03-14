@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gunicorn-service
+  labels: 
+    app: {{ .Values.labels.frontend }}
+spec:
+  type: {{ .Values.service.frontend.type }}
+  ports:
+    - port: {{ .Values.service.frontend.port }}
+      targetPort: 8050
+      protocol: TCP
+      name: gunicorn-ext
+  selector:
+    app: {{ .Values.labels.frontend }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels: 
+    app: {{ .Values.labels.frontend }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.labels.frontend }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.labels.frontend }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: src-files
+          mountPath: /dashboard
+        ports:
+          - name: mongodb
+            containerPort: 27017
+            protocol: TCP
+          - name: gunicorn
+            containerPort: 8050
+            protocol: TCP
+        command: ["/bin/bash", "-c"]
+        args:
+        - conda init && source ~/.bashrc && 
+          conda env create -f /dashboard/conda.yml && conda activate dashboard_env && 
+          cd dashboard &&
+          gunicorn dashboard:server -b 0.0.0.0:8050 -w 2 --timeout 600
+        env:
+          - name: SECRET_PW
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-mongodb
+                key: mongodb-root-password
+          - name: SVC_NAME
+            value: "{{ .Release.Name }}-mongodb"
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+      - name: init-db
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 27017
+          name: mongodb-conn
+        command: ["/bin/sh", "-c"]
+        args:
+        - "cd tmp && apt-get update && apt-get install curl jq -y &&
+          curl -LJO {{ .Values.links.mongotools }} &&
+          tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
+          mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
+          curl -s {{ .Values.links.datagov }} | jq '.result.records' >> sg_covid.json &&
+          mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
+          --file sg_covid.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
+        env:
+          - name: SECRET_PW
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-mongodb
+                key: mongodb-root-password
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: src-files
+        hostPath: 
+          path: /src
