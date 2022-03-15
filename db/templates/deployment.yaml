@@ -53,9 +53,10 @@ spec:
             protocol: TCP
         command: ["/bin/bash", "-c"]
         args:
-        - conda init && source ~/.bashrc && 
+        - sudo chmod -R 755 /dashboard &&
+          cd dashboard && 
+          conda init && source ~/.bashrc && 
           conda env create -f /dashboard/conda.yml && conda activate dashboard_env && 
-          cd dashboard &&
           gunicorn dashboard:server -b 0.0.0.0:8050 -w 2 --timeout 600
         env:
           - name: SECRET_PW
