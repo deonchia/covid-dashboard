@@ -5,7 +5,6 @@
 replicaCount: 1
 
 labels:
-  backend: mongodb
   frontend: gunicorn
 
 image:
@@ -47,9 +46,6 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  backend:
-    type: ClusterIP
-    port: 27017
   frontend:
     type: LoadBalancer
     port: 8050

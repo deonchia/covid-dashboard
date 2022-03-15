@@ -19,7 +19,7 @@ kind: ConfigMap
 metadata:
   name: mount-src
 data:
-{{- (.Files.Glob "src/*").AsConfig | nindent 2 }}
+{{- (.Files.Glob "src/**").AsConfig | nindent 2 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,7 +43,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
         - name: src-files
-          mountPath: /dashboard
+          mountPath: /tmp/dashboard
         ports:
           - name: mongodb
             containerPort: 27017
@@ -53,10 +53,11 @@ spec:
             protocol: TCP
         command: ["/bin/bash", "-c"]
         args:
-        - cd dashboard && 
+        - mkdir /dashboard && cp /tmp/dashboard/* /dashboard && 
+          cd dashboard && mkdir assets && mv style.css assets &&
           conda init && source ~/.bashrc && 
           conda env create -f /dashboard/conda.yml && conda activate dashboard_env && 
-          gunicorn dashboard:server -b 0.0.0.0:8050 -w 2 --timeout 600
+          gunicorn dashboard:server -b 0.0.0.0:8050 -w 2
         env:
           - name: SECRET_PW
             valueFrom:
@@ -95,4 +96,4 @@ spec:
       - name: src-files
         configMap:
           name: mount-src
-          defaultMode: 0775
+
