@@ -14,6 +14,13 @@ spec:
   selector:
     app: {{ .Values.labels.frontend }}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mount-src
+data:
+{{- (.Files.Glob "src/*").AsConfig | nindent 2 }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -86,5 +93,6 @@ spec:
           {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: src-files
-        hostPath: 
-          path: /src
+        configMap:
+          name: mount-src
+          defaultMode: 0755

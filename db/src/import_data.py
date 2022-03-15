@@ -12,7 +12,6 @@ def get_data() -> list:
             username="root", 
             password=password)
 
-        print('Connected to mongodb.')
         database = client['covid']['sg']
     except ConnectionRefusedError as err: 
         print(err)
