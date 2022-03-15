@@ -53,7 +53,7 @@ spec:
             protocol: TCP
         command: ["/bin/bash", "-c"]
         args:
-        - sudo chmod -R 755 /dashboard &&
+        - chmod -R 755 /dashboard &&
           cd dashboard && 
           conda init && source ~/.bashrc && 
           conda env create -f /dashboard/conda.yml && conda activate dashboard_env && 
