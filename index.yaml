@@ -2,19 +2,19 @@ apiVersion: v1
 entries:
   db:
   - apiVersion: v2
-    appVersion: 0.1.3
-    created: "2022-03-15T15:24:20.242771+08:00"
+    appVersion: 0.1.4
+    created: "2022-03-17T11:08:31.813518+08:00"
     dependencies:
     - name: mongodb
       repository: https://charts.bitnami.com/bitnami/
       version: 11.0.6
     description: A Helm chart for a simple dashboard of Singapore's Covid 19 statistics;
       built with Dash, served by Gunicorn with a mongodb backend
-    digest: cc6419214c9c181a856cef47e7b36a915dba466d8c800b6b982f55fbf6321d35
+    digest: a9dd6d6e0be21e160c47a998fc9bc6fff9848ae0172a708fa295598aba63f811
     icon: https://artifacthub.io/static/media/placeholder_pkg_helm.png
     name: db
     type: application
     urls:
-    - https://deonchia.github.io/covid-dashboard/db-0.1.3.tgz
-    version: 0.1.3
-generated: "2022-03-15T15:24:20.230873+08:00"
+    - https://deonchia.github.io/covid-dashboard/db-0.1.4.tgz
+    version: 0.1.4
+generated: "2022-03-17T11:08:31.800329+08:00"

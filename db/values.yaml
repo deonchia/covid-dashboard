@@ -6,6 +6,7 @@ replicaCount: 1
 
 labels:
   frontend: gunicorn
+  init: init-db
 
 image:
   repository: continuumio/miniconda3
@@ -84,3 +85,10 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+
+mongodb:
+  metrics:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: "{{ .Release.Namespace }}"

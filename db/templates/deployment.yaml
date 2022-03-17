@@ -27,6 +27,10 @@ metadata:
   name: {{ .Release.Name }}-deployment
   labels: 
     app: {{ .Values.labels.frontend }}
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -68,32 +72,7 @@ spec:
             value: "{{ .Release.Name }}-mongodb"
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
-      initContainers:
-      - name: init-db
-        image: ubuntu
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 27017
-          name: mongodb-conn
-        command: ["/bin/sh", "-c"]
-        args:
-        - "cd tmp && apt-get update && apt-get install curl jq -y &&
-          curl -LJO {{ .Values.links.mongotools }} &&
-          tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
-          mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
-          curl -s {{ .Values.links.datagov }} | jq '.result.records' >> sg_covid.json &&
-          mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
-          --file sg_covid.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
-        env:
-          - name: SECRET_PW
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-mongodb
-                key: mongodb-root-password
-        resources:
-          {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: src-files
         configMap:
           name: mount-src
-
