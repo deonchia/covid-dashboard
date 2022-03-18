@@ -1,37 +1,31 @@
 # covid-dashboard
 A simple dashboard to reflect Singapore's Covid-19 Situation. Built on Dash, served by Gunicorn with a MongoDB backend packaged as a helm chart.  
-<br>
 
 ## TL;DR
 ```
 $ helm repo add dc-repo https://deonchia@github.io/covid-dashboard
 $ helm repo update
 $ helm install release-name dc-repo/db
-```
-<br>
+```  
 
 ## Table of Contents
-1. [Introduction]($introduction)
-2. [Prerequisites]($prerequisites)
-3. [Installation]($installing-the-chart)
-4. [Accessing the App]($accessing-the-app)
-5. [Uninstallation]($uninstalling-the-chart)
-5. [Parameters]($parameters)
-
-<br>
-
-
+1. [Introduction](https://github.com/deonchia/covid-dashboard/edit/master/README.md#introduction)
+2. [Prerequisites](https://github.com/deonchia/covid-dashboard/edit/master/README.md#prerequisites)
+3. [Installation](https://github.com/deonchia/covid-dashboard/edit/master/README.md#installing-the-chart)
+4. [Accessing the App](https://github.com/deonchia/covid-dashboard/edit/master/README.md#accessing-the-app)
+5. [Monitoring MongoDB](https://github.com/deonchia/covid-dashboard/edit/master/README.md#monitoring-mongodb)
+6. [Uninstallation](https://github.com/deonchia/covid-dashboard/edit/master/README.md#uninstalling-the-chart)
+7. [Parameters](https://github.com/deonchia/covid-dashboard/edit/master/README.md#parameters)
+  
 
 ## Introduction
-This chart bootstaps a Dash app, Gunicorn server and a MongoDB&reg; deployment on a Kubernetes cluster with the Helm package manager. 
-
-<br>
+This chart bootstaps a Dash app, Gunicorn server and a MongoDB&reg; deployment on a Kubernetes cluster with the Helm package manager.  
 
 ## Prerequisites
 Ensure that the following prerequisites are fulfilled before proceeding.
 * Kubernetes 1.19+
 * Helm 3.2.0+
-<br><br>
+  
 
 ## Installing the Chart
 To install the chart with the release-name `rel-name`:
@@ -40,9 +34,7 @@ $ helm install rel-name dc-repo/db
 ```
 > **Note**: This installs the release in the default namespace.  
 
-> **Note**: Once a chart is deployed, it is not possible to apply changes to the MongoDB's access credentials. Please access the application's administrative tool to do so.
-
-<br>
+> **Note**: Once a chart is deployed, it is not possible to apply changes to the MongoDB's access credentials. Please access the application's administrative tool to do so.  
 
 ## Accessing the app
 Upon installation of the chart, a small printout will display a set of commands to retrieve the endpoint where the Gunicorn is serving at. 
@@ -62,19 +54,35 @@ NOTES:
            You can watch the status of by running 'kubectl get --namespace default svc -w rel-name-gunicorn-service'
   export SERVICE_IP=$(kubectl get svc --namespace default rel-name-gunicorn-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:8050
-```
-<br>
+```  
+
+## Monitoring MongoDB
+Using MongoDB's built-in monitoring, it is possible to monitor the health of the database with the following commands.  
+
+Obtain the password for the MongoDB server:  
+`$ kubectl get secrets --namespace default rel-name-mongodb -o jsonpath='{.data.mongodb-root-password}' | base64 --decode`
+> AS3dovnm2o
+
+Fire up a shell in the mongodb pod:  
+`$ kubectl exec -ti --namespace default rel-name-mongodb-7b786c68d4-q7fz7 -- /bin/bash`
+
+Access the server:  
+`$mongo --authenticationDatabase admin -u root -p AS3dovnm2o`
+> MongoDB shell Version v4.4.13
+
+You will be prompted to enable the monitoring service with:   
+`db.enableFreeMonitoring()`  
+
+and can then access the monitoring page with the URL provided.  
 
 ## Uninstalling the Chart
 To uninstall/delete the `rel-name` deployment:
 ```
 $ helm delete rel-name
 ```
-This command removes all components (Deployments, Cronjob, Services) related to the Helm chart.
+This command removes all components (Deployments, Cronjob, Services) related to the Helm chart.  
 
-<br>
-
-## Parameters:
+## Parameters
 
 Below contains the customisable parameters when running the Helm Chart.  
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.  
@@ -101,6 +109,4 @@ $ helm install rel-name --set replicaCount=10
 | resources.limits.cpu | CPU limit for all pods | 2 |
 |resources.limits.memory | Memory limit for all pods | 4G | 
 | resources.requests.cpu | CPU request for all pods | 1 |
-| resources.requests.memory | Memory request for all pods | 2G |
-
-<br>
+| resources.requests.memory | Memory request for all pods | 2G |  
