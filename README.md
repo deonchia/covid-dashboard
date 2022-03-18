@@ -9,13 +9,13 @@ $ helm install release-name dc-repo/db
 ```  
 
 ## Table of Contents
-1. [Introduction](https://github.com/deonchia/covid-dashboard/edit/master/README.md#introduction)
-2. [Prerequisites](https://github.com/deonchia/covid-dashboard/edit/master/README.md#prerequisites)
-3. [Installation](https://github.com/deonchia/covid-dashboard/edit/master/README.md#installing-the-chart)
-4. [Accessing the App](https://github.com/deonchia/covid-dashboard/edit/master/README.md#accessing-the-app)
-5. [Monitoring MongoDB](https://github.com/deonchia/covid-dashboard/edit/master/README.md#monitoring-mongodb)
-6. [Uninstallation](https://github.com/deonchia/covid-dashboard/edit/master/README.md#uninstalling-the-chart)
-7. [Parameters](https://github.com/deonchia/covid-dashboard/edit/master/README.md#parameters)
+1. [Introduction](https://github.com/deonchia/covid-dashboard/blob/master/README.md#introduction)
+2. [Prerequisites](https://github.com/deonchia/covid-dashboard/blob/master/README.md#prerequisites)
+3. [Installation](https://github.com/deonchia/covid-dashboard/blob/master/README.md#installing-the-chart)
+4. [Accessing the App](https://github.com/deonchia/covid-dashboard/blob/master/README.md#accessing-the-app)
+5. [Monitoring MongoDB](https://github.com/deonchia/covid-dashboard/blob/master/README.md#monitoring-mongodb)
+6. [Uninstallation](https://github.com/deonchia/covid-dashboard/blob/master/README.md#uninstalling-the-chart)
+7. [Parameters](https://github.com/deonchia/covid-dashboard/blob/master/README.md#parameters)
   
 
 ## Introduction
