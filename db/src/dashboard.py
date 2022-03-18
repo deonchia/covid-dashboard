@@ -4,28 +4,43 @@ from dash import Dash, html, dcc
 
 from import_data import get_data
 
+"""
+A module to display the dashboard based on the data pulled from the get_data() 
+method and prepares the app and the server, courtesy of Dash.
+The dashboard is based on the CSS stylesheet located in assets/style.css. 
+"""
+
+
 external_stylesheets = [
     {
     "href": 'http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext',
     "rel": 'stylesheet', 
     "style": "text/css"
-    }]
+    }
+]
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 df = pd.read_json(get_data()).sort_values("pr_date")
 
-# with open("sg_covid.json") as r:
+# Line to load local dataset to troubleshoot CSS layout
+# with open("../../sg_covid.json") as r:
 #     df = pd.read_json(r).sort_values("pr_date")
 
 fig = px.line(df, x="pr_date", y="count_of_case", color='age_group',
-            labels={"pr_date":"PR Date", "count_of_case":"Case Count"},
+            labels={"pr_date":"Date", "count_of_case":"Case Count"},
+            category_orders={"age_group": sorted(df.age_group.unique())}
             )
+
+fig.update_layout(
+    legend=dict(
+        bgcolor='rgba(0,0,0,0)',
+        title="Age Group")
+    )
 
 app.layout = html.Div(
     children=[
         html.Div(children=[
-            html.Br(),
             html.Br(),
             html.H1(children='Everybody asks who has COVID-19, but nobody asks how is COVID-19',
                     className="header-title"),
