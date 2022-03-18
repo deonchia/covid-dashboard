@@ -21,12 +21,12 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
           - "cd tmp && apt-get update && apt-get install curl jq -y &&
-          curl -LJO {{ .Values.links.mongotools }} &&
-          tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
-          mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
-          curl -s {{ .Values.links.datagov }} | jq '.result.records' >> sg_covid.json &&
-          mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
-          --file sg_covid.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
+            curl -LJO {{ .Values.links.mongotools }} &&
+            tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
+            mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
+            curl -s '{{ .Values.links.datagov }}&limit=300' | jq '.result.records' >> sg_covid.json &&
+            mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
+            --file sg_covid.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
           env:
           - name: SECRET_PW
             valueFrom:

@@ -18,6 +18,7 @@ links:
   pkg: mongodb-database-tools-ubuntu2004-x86_64-100.5.2
   mongotools: https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2004-x86_64-100.5.2.tgz
   datagov: https://data.gov.sg/api/action/datastore_search?resource_id=6c14814b-09b7-408e-80c4-db3d393c7c15
+  update_datagov: https://data.gov.sg/api/action/datastore_search?resource_id=6c14814b-09b7-408e-80c4-db3d393c7c15
 
 
 imagePullSecrets: []
@@ -74,10 +75,10 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
     cpu: 2
-    memory: 8G
+    memory: 4G
   requests:
     cpu: 1
-    memory: 4G
+    memory: 2G
 
 autoscaling:
   enabled: false
@@ -86,9 +87,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-mongodb:
-  metrics:
-    enabled: true
-  serviceMonitor:
-    enabled: true
-    namespace: "{{ .Release.Namespace }}"
+# mongodb:
+#   metrics:
+#     enabled: false
+#   serviceMonitor:
+#     enabled: true
+#     namespace: "{{ .Release.Namespace }}"

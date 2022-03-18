@@ -70,8 +70,18 @@ spec:
                 key: mongodb-root-password
           - name: SVC_NAME
             value: "{{ .Release.Name }}-mongodb"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - exit $(test $(date +%H) -eq 0 && echo 1 || echo 0 )
+          failureThreshold: 1
+          initialDelaySeconds: 3600
+          periodSeconds: 60
         resources:
-          {{- toYaml .Values.resources | nindent 12 }}
+          {{- toYaml .Values.resources | nindent 10 }}
+      restartPolicy: Always
       volumes:
       - name: src-files
         configMap:

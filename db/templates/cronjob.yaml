@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-db
+spec:
+  schedule: "45 23 * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 120
+      template:
+        spec:
+          containers:
+          - name: update-db
+            image: ubuntu
+            imagePullPolicy: IfNotPresent
+            ports:
+            - containerPort: 27017
+              name: mongodb-conn
+            command: ["/bin/sh", "-c"]
+            args:
+            - "cd tmp && apt-get update && apt-get install curl jq -y &&
+            curl -LJO {{ .Values.links.mongotools }} &&
+            tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
+            mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
+            curl -s '{{ .Values.links.update_datagov }}&filters={\"pr_date\":\"$(date +%F)\"}' | jq '.result.records' >> update.json &&
+            mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
+            --file update.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
+            env:
+            - name: SECRET_PW 
+              valueFrom:
+                secretKeyRef:
+                  name: test-mongodb
+                  key: mongodb-root-password
+            resources:
+            {{- toYaml .Values.resources | nindent 14 }}
+          restartPolicy: "OnFailure"
