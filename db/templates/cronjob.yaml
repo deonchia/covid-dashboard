@@ -29,7 +29,7 @@ spec:
             - name: SECRET_PW 
               valueFrom:
                 secretKeyRef:
-                  name: test-mongodb
+                  name: {{ .Release.Name }}-mongodb
                   key: mongodb-root-password
             resources:
             {{- toYaml .Values.resources | nindent 14 }}
