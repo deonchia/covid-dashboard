@@ -4,7 +4,7 @@ A simple dashboard to reflect Singapore's Covid-19 Situation. Built on Dash, ser
 
 ## TL;DR
 ```
-$ helm repo add dc-repo https://deonchia@github.io/covid-dashboard
+$ helm repo add dc-repo https://deonchia.github.io/covid-dashboard
 $ helm repo update
 $ helm install release-name dc-repo/db
 ```
@@ -74,7 +74,7 @@ This command removes all components (Deployments, Cronjob, Services) related to 
 
 <br>
 
-## Parameters:
+## Parameters
 
 Below contains the customisable parameters when running the Helm Chart.  
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.  
