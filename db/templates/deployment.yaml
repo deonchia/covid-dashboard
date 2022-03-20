@@ -75,7 +75,7 @@ spec:
             command:
             - /bin/bash
             - -c
-            - exit $(test $(date +%H) -eq 0 && echo 1 || echo 0 )
+            - exit $(test $(date +%H) -eq 16 && echo 1 || echo 0 ) # system time is UTC, -8 hours correction needed
           failureThreshold: 1
           initialDelaySeconds: 3600
           periodSeconds: 60

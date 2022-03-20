@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: update-db
 spec:
-  schedule: "45 23 * * *"
+  schedule: "45 15 * * *" # system time is UTC, -8 hours correction required
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 120
@@ -23,7 +23,7 @@ spec:
             tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
             mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
             curl -s '{{ .Values.links.datagov }}&filters={\"pr_date\":\"$(date +%F)\"}' | jq '.result.records' >> update.json &&
-            mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
+            mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) \
             --file update.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
             env:
             - name: SECRET_PW 
