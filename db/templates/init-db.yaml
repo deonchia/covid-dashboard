@@ -24,7 +24,7 @@ spec:
             curl -LJO {{ .Values.links.mongotools }} &&
             tar -zxvf ./{{ .Values.links.pkg }}.tgz &&
             mv ./{{ .Values.links.pkg }}/bin/mongoimport /usr/local/bin &&
-            curl -s '{{ .Values.links.datagov }}&limit=300' | jq '.result.records' >> sg_covid.json &&
+            curl -s '{{ .Values.links.datagov }}&limit=300' | jq '.result.records[] | {pr_date: .pr_date, age_group: .age_group, count_of_case: .count_of_case}' | jq -s '.' >> sg_covid.json &&
             mongoimport -d covid -c sg --authenticationDatabase admin -u root -p $(SECRET_PW) --drop \
             --file sg_covid.json -h {{ .Release.Name }}-mongodb:27017 --jsonArray"
           env:
