@@ -1,6 +1,8 @@
 # covid-dashboard
 A simple dashboard to reflect Singapore's Covid-19 Situation. Built on Dash, served by Gunicorn with a MongoDB backend packaged as a helm chart.  
 
+<img src="assets/header.png" width="800" height="450"/>
+
 ## TL;DR
 ```
 $ helm repo add dc-repo https://deonchia.github.io/covid-dashboard
